@@ -1,17 +1,12 @@
 # Day 13: Claw Contraption
 # Part 1: 29711
-# Part 2: 
+# Part 2: 94955433618919
 
 import numpy as np
 import lib
 
 def run():
     machines = process_input() 
-    
-    tot = 0
-    for m in machines:
-        tot += play_fast(m)
-    print(tot)
 
     tot = 0
     for m in machines:
@@ -22,7 +17,7 @@ def run():
     for m in machines:
         a, b, p = m
         p = (p[0] + 10000000000000, p[1] + 10000000000000)
-        #tot += play_fastest((a, b, p))
+        tot += play_fastest((a, b, p))
     print(tot)
 
 
@@ -60,13 +55,20 @@ def play_fast(m):
 
 
 
-# Linear Algebra: O(1)?
+# Linear Algebra: O(1)
+# The system of equations can be rewritten as a matrix problem.
 def play_fastest(m):
     a, b, p = m
     matA = np.matrix([a, b]).transpose()
     matb = np.matrix(p).transpose()
     matx = np.linalg.lstsq(matA, matb)[0]
-    return matx[0,0] * 3 + matx[1,0]
+    # Filter impossible games
+    tol = 0.01
+    if abs(matx[0,0] - round(matx[0,0])) >= tol or \
+        abs(matx[1,0] - round(matx[1,0])) >= tol:
+        return 0
+    else:
+        return round(matx[0,0]) * 3 + round(matx[1,0])
 
 
 

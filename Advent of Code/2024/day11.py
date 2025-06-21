@@ -1,18 +1,39 @@
 # Day 11: Plutonian Pebbles
 # Part 1: 175006
-# Part 2: 
+# Part 2: 207961583799296
 
+from collections import defaultdict
 import lib
 
 def run():
     stones = process_input()
 
-    s1 = blink(stones, 25)
-    print(len(s1))
+    s1 = blink_fast(stones, 25)
+    print(s1)
 
-    s2 = blink(stones, 75)
-    print(len(s2))
+    s2 = blink_fast(stones, 75)
+    print(s2)
     
+
+def blink_fast(stones, amt):
+    sd = defaultdict(int)
+    for s in stones:
+        sd[s] += 1
+    for i in range(amt):
+        nsd = defaultdict(int)
+        for s in sd:
+            ss = str(s)
+            if s == 0:
+                nsd[1] += sd[s]
+            elif len(ss) % 2 == 0:
+                nsd[int(ss[:len(ss)//2])] += sd[s]
+                nsd[int(ss[len(ss)//2:])] += sd[s]
+            else:
+                nsd[s * 2024] += sd[s]
+        sd = nsd
+        print(i, sum(sd.values()))
+    return sum(sd.values())
+
 
 
 # Barely faster than single core brute force
