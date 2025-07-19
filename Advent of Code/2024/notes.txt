@@ -1,12 +1,11 @@
 Requires correct design:
 
-Day 16
+Day 16 (maze)
 Day 17 Part 2
 Day 21
-Day 22 Part 2
 Day 24 Part 2
 
 
 Requires faster algo:
 
-Day 20 Part 1/2
+Day 20 (maze)

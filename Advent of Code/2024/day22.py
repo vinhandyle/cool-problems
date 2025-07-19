@@ -1,6 +1,6 @@
 # Day 22: Monkey Market
 # Part 1: 18694566361
-# Part 2: 
+# Part 2: 2100
 
 import lib
 
@@ -13,18 +13,24 @@ def run():
         tot += secret_num(n, 2000, sdict)
     print(tot)
 
-    # Get all price change sequences grouped by end price, for each buyer
-    prices, deltas, chains = [], [], []
+    # Get price and price change per day for each buyer
+    prices, deltas = [], []
     for s in sdict.values():
         prices.append(get_price(s))
     for p in prices:
         deltas.append(get_delta(p))
-    for i in range(len(deltas)):
-        chains.append(get_chains(prices[i], deltas[i]))
 
-    # Algo
-    tot = 0
-    print(tot)
+    # Get first price of each chain per buyer, 
+    # then group collectively by chain
+    cdict = dict()
+    for i in range(len(deltas)):
+        get_chains(prices[i], deltas[i], cdict)
+        
+    mx = (0,0)
+    for c in cdict:
+        if sum(cdict[c]) > mx[0]:
+            mx = (sum(cdict[c]), c)
+    print(mx)
 
 
 
@@ -37,14 +43,16 @@ def merge_chains(chains):
 
 
 
-def get_chains(prices, deltas):
-    d = dict()
+def get_chains(prices, deltas, cdict):
+    chains = set()
     for i in range(4, len(prices)):
-        if prices[i] not in d:
-            d[prices[i]] = set()
-        d[prices[i]].add((deltas[i-3], deltas[i-2], deltas[i-1], deltas[i]))
-    return d
-
+        c = (deltas[i-3], deltas[i-2], deltas[i-1], deltas[i])
+        if c not in chains:
+            chains.add(c)
+            if c not in cdict:
+                cdict[c] = []
+            cdict[c].append(prices[i])
+        
 
 
 def get_delta(prices):
