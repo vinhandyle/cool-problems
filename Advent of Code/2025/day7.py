@@ -1,6 +1,6 @@
 # Day 7: Laboratories
 # Part 1: 1598
-# Part 2: 
+# Part 2: 4509723641302
 
 from collections import defaultdict
 
@@ -8,9 +8,7 @@ import lib
 
 def run():
     start, splitters = process_input()
-   
-    tree, f_beams = defaultdict(int), dict()
-    tree[start] = 1
+    tree = defaultdict(set)
 
     beams, splits = {start}, set()
     while len(beams) > 0:
@@ -18,18 +16,24 @@ def run():
         for b in beams:
             if n_splitters := sorted(filter(lambda s: s[0] > b[0] and s[1] == b[1], splitters)):
                 s = n_splitters[0]
-                temp.add((s[0], s[1] - 1))
-                temp.add((s[0], s[1] + 1))
-                tree[(s[0], s[1] - 1)] += tree[b]
-                tree[(s[0], s[1] + 1)] += tree[b]
+                l, r = (s[0], s[1] - 1), (s[0], s[1] + 1)
+                tree[b] = {l, r}
+                temp |= tree[b]
                 splits.add(s)
-            else:
-                f_beams[b] = tree[b]
         beams = temp
     print(len(splits))
-    #print('\n'.join(str(i) for i in f_beams.items()))
-    print(sum(t for t in f_beams.values())) # under 5891269782251362111579
 
+    dp = dict()
+    def get_timelines(node):
+        v = 1
+        if node in dp:
+            return dp[node]
+        if len(tree[node]) > 0:
+            v = sum(get_timelines(split) for split in tree[node])
+        dp[node] = v
+        return v
+    print(get_timelines(start))
+    
 
 
 def process_input():

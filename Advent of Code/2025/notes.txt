@@ -1,6 +1,5 @@
 Requires correct design:
 
-Day 7 Part 2
 Day 9 Part 2
 Day 12
 
